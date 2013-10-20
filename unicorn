@@ -1,0 +1,80 @@
+#!/bin/sh
+
+APP_NAME=redmine
+RAILS_ENV=production
+
+APP_ROOT="/home/git/redmine"
+
+PID="${APP_ROOT}/tmp/pids/unicorn.pid"
+CONF="${APP_ROOT}/config/unicorn.rb"
+
+start()
+{
+  if [ -e $PID ]; then
+    echo "$APP_NAME already started";
+    exit 1;
+  fi
+  echo "start $APP_NAME";
+  cd $APP_ROOT
+  bundle exec unicorn_rails -c ${CONF} -E ${RAILS_ENV} -D
+}
+
+stop()
+{
+  if [ ! -e $PID ]; then
+    echo "$APP_NAME not started";
+    exit 1;
+  fi
+  echo "stop $APP_NAME";
+  kill -QUIT `cat ${PID}`
+  rm -f $PID
+}
+
+force_stop()
+{
+  if [ ! -e $PID ]; then
+    echo "$APP_NAME not started";
+    exit 1;
+  fi
+  echo "stop $APP_NAME";
+  kill -TERM `cat ${PID}`
+  rm -f $PID
+}
+
+reload()
+{
+  if [ ! -e $PID ]; then
+    echo "$APP_NAME not started";
+    start
+    exit 0;
+  fi
+  echo "reload $APP_NAME";
+  kill -HUP `cat ${PID}`
+}
+
+restart()
+{
+    stop
+    start
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  force-stop)
+    force_stop
+    ;;
+  reload)
+    reload
+    ;;
+  restart)
+    restart
+    ;;
+  *)
+    echo "Usage: service redmine [start|stop|force-stop|reload|restart]"
+    ;;
+esac

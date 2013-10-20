@@ -16,7 +16,7 @@ start()
   fi
   echo "start $APP_NAME";
   cd $APP_ROOT
-  $CMd -c ${CONF} -E ${RAILS_ENV} -D
+  $CMD -c ${CONF} -E ${RAILS_ENV} -D
 }
 
 stop()

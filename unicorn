@@ -8,7 +8,7 @@ APP_USER="git"
 PID="${APP_ROOT}/tmp/pids/unicorn.pid"
 CONF="${APP_ROOT}/config/unicorn.rb"
 
-if ["$USER" != "$APP_USER"]; then
+if [ "$USER" != "$APP_USER" ]; then
     sudo -u "$APP_USER" -H -i $0 "$@"; exit;
 fi
 
